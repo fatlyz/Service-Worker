@@ -38,12 +38,12 @@ function uploadfile(tag){
 
 function download(ID){
     console.log(ID)
-  var data = {file : ID}
-  fetch('/download?file='+data.file).then((response) => response.blob())
-  .then((blob) => {
-    console.log(blob)
-    return URL.createObjectURL(blob)})
-    .then((href) => {
+    var data = {file : ID}
+    fetch('/download?file='+data.file).then((response) => response.blob()).then(
+      (blob) => {
+      console.log(blob)
+      return URL.createObjectURL(blob)}).then(
+        (href) => {
         const a = document.createElement("a")
         document.body.appendChild(a)
         a.style = "display: none"
