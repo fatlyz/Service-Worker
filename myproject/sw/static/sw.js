@@ -56,12 +56,12 @@ self.addEventListener('fetch',function ( event ) {
 var list = {txt:'txt',py:'python',java:'java',c:'c',cpp:'c++'}
 
 //上传文件的总操作
-function operate(req){
+async function operate(req){
   var requestClone = req.clone();
-  var filetext = getfiletext(requestClone);// 读取请求主体内容,正式开发中可以换为请求文件名
-  console.log(filetext)
+  // var filetext = getfiletext(requestClone);// 读取请求主体内容,正式开发中可以换为请求文件名
+  // console.log(filetext)
   //根据文件名进行url字段的添加，具体项目是根据映射表变成相应的链接
-  var newreq = Addurl(req)
+  var newreq = await AddURL(requestClone)
   console.log(newreq)
   return fetch(req)
 }
@@ -69,7 +69,7 @@ function operate(req){
 
 
 //在正式的开发中只需要将文件名拿到就好，然后根据文件名添加对应的url字段
-function getfiletext(req){
+async function getfiletext(req){
 
   //这是返回文件内容的代码段
   // const reader = new FileReader();
@@ -83,14 +83,20 @@ function getfiletext(req){
   //   return reader.readAsText(formdata.get('File')); //文件内容
   // })
   //这是返回文件名的代码段
-  req.forData().then(formdata =>{
-    return formdata.get('File').name
-  })
+  return await req.formData().then(formdata =>{
+      console.log(formdata.get('File').name,typeof(formdata.get('File').name))
+      return formdata.get('File').name
+    })
 }
 
 //根据映射关系修改URL,还未写完
-function AddURL(req){
-  req.url = req.url + list[getfiletext(req)]
-  console.log(req.url)
+async function AddURL(req){
+  var add = await getfiletext(req)
+  await console.log(add.split("."),add.split(".")[1])
+  var add = add.split(".")[1]
+  console.log(req.url + list[add])
+  var url = req.url + list[add]
+  req.url =url
+  console.log(url)
   return req;
 }
